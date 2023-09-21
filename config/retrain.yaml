@@ -1,0 +1,60 @@
+GLOBAL:
+  USE_GPU: true
+  RESUME: true
+  RESUME_PATH: ./train_log/2023-0921_2051/checkpoints/best.pth
+  DEVICE: '0' # 'cpu' or '0' or '0,1,2,3' ...
+  EPOCH_NUM: 10
+  SAVE_RESULT_DIR: ./train_log
+  SAVE_EPOCH_STEP: 1
+  VAL_EPOCH_STEP: 1
+  PRETRAINED_MODEL: ./pretrained_model/resnet34.pth
+  DISTRIBUTED: true
+  EARLY_STOP_PATIENCE: 5
+  TRAIN_DIR: ./data_dir/train
+  VAL_DIR: ./data_dir/val
+  TEST_DIR: ./data_dir/test
+  VISUAL_AUGMENTATION: true
+  USE_AMP: false
+
+TRAIN:
+  IMG_SIZE: 224
+  TRANSFORMS_RANDOMHORIZONTALFLIP: true
+  TRANSFORMS_RANDOMVERTIACALFLIP: true
+  TRANSFORMS_COLORJITTER:
+  TRANSFORMS_BRIGHTNESS: 0.1
+  TRANSFORMS_CONTRAST: 0.1
+  TRANSFORMS_SATURATION: 0.1
+  TRANSFORMS_HUE: 0
+  BATCHSIZE_PER_CARD: 8
+  DROP_LAST: true
+  NUM_WORKERS: 4
+
+DATASET:
+  IMAGE_DIR: "./data_dir/train2014"
+  IMAGE_VAL_DIR: "./data_dir/val2014"
+  RESIZED_IMAGE_DIR: "./data_dir/resized_images"
+  RESIZED_VAL_IMAGE_DIR: "./data_dir/resized_val_images"
+  ANNOTATIONS_DIR: "./data_dir/annotations/captions_train2014.json"
+  VAL_ANNOTATIONS_DIR: "./data_dir/annotations/captions_val2014.json"
+  SAVED_VOCAB_PATH: "./data_dir/vocabulary.pkl"
+  THRESHOLD: 4
+
+MODEL:
+  NAME: cnnlstm
+  EMBEDDING_SIZE: 256
+  HIDDEN_SIZE: 256
+  NUM_LSTM_LAYERS: 1
+
+CRITERION:
+  NAME: CE
+  COORD_RATIO: 1
+  CLASSIFIER_RATIO: 0.5
+
+OPTIMIZER:
+  NAME: Adam
+  LEARNING_RATE: 0.0003
+  BETA1: 0.9
+  BETA2: 0.999
+  WEIGHT_DECAY: 0
+  LR_NAME: cosine_lr
+  LR_DECAY: 0.2 # controls the scaling factor of the learning rate

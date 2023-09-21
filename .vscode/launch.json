@@ -1,0 +1,27 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "train train.py",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/train.py", // Assuming train.py is in the workspace folder
+            "console": "integratedTerminal",
+            "args": [
+                "--yaml",
+                "${workspaceFolder}/config/train.yaml",
+            ]
+        },
+        {
+            "name": "retrain train.py",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/train.py", // Assuming train.py is in the workspace folder
+            "console": "integratedTerminal",
+            "args": [
+                "--yaml",
+                "${workspaceFolder}/config/retrain.yaml",
+            ]
+        }
+    ]
+}
