@@ -56,5 +56,6 @@ OPTIMIZER:
   BETA1: 0.9
   BETA2: 0.999
   WEIGHT_DECAY: 0
-  LR_NAME: linear_lr
+  # LR_NAME: linear_lr
+  LR_NAME: none
   LR_DECAY: 0.1 # controls the scaling factor of the learning rate

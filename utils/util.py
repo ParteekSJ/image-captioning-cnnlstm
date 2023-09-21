@@ -101,11 +101,11 @@ def count_optimizer_parameters(optimizer):
 
 
 def read_split_data(cfg, mode):
-    # 遍历文件夹，一个文件夹对应一个类别
+    # traverse folders, one per category
     classes = [cla for cla in os.listdir(cfg.GLOBAL.TRAIN_DIR)]
-    # 排序，保证顺序一致
+    # Sort to ensure consistent order
     classes.sort()
-    # 生成类别名称以及对应的数字索引
+    # Generate category names and corresponding numerical indexes
     class_indices = dict((k, v) for v, k in enumerate(classes))
 
     images_path = []
@@ -113,51 +113,56 @@ def read_split_data(cfg, mode):
     every_class_num = []
 
     if mode == "train":
+        # iterates over each class (folder) in the classes list
         for cla in classes:
+            # For each class, it constructs a list of image file paths (images) by listing the files in the corresponding subdirectory of cfg.GLOBAL.TRAIN_DIR
             train_cla_path = os.path.join(cfg.GLOBAL.TRAIN_DIR, cla)
             images = [
                 os.path.join(cfg.GLOBAL.TRAIN_DIR, cla, i)
                 for i in os.listdir(train_cla_path)
             ]
+            # retrieves the numerical index (image_class) corresponding to the current class name using the class_indices dictionary
             image_class = class_indices[cla]
-            every_class_num.append(len(images))  # 记录每个类别下的图片个数
+            # Record the number of pictures in each category
+            every_class_num.append(len(images))
+            # appends the image file paths (images_path) and their corresponding class labels (images_label) to their respective lists
             for img_path in images:
                 images_path.append(img_path)
                 images_label.append(image_class)
     elif mode == "val":
         for cla in classes:
             val_cal_path = os.path.join(cfg.GLOBAL.VAL_DIR, cla)
-            # 遍历获取supported支持的所有文件路径
+            # same steps but different directory
             images = [
                 os.path.join(cfg.GLOBAL.VAL_DIR, cla, i)
                 for i in os.listdir(val_cal_path)
             ]
-            # 获取该类别对应的索引
             image_class = class_indices[cla]
-            # 记录该类别的样本数量
             every_class_num.append(len(images))
             for img_path in images:
                 images_path.append(img_path)
                 images_label.append(image_class)
-
+    """
+    every_class_num - list containing the number of images in each class (useful for tracking class distribution).
+    images_path - list of file paths to the images.
+    images_label - list of numerical class labels corresponding to the images in images_path.
+    """
     return every_class_num, images_path, images_label
 
 
 def plot_image(num_classes, every_class_num, experiment_dir, mode):
+    # plots the data in the every_class_num list as vertical bars
     plt.bar(range(len(num_classes)), every_class_num, align="center")
-    # 将横坐标0,1,2,3,4替换为相应的类别名称
     plt.xticks(range(len(num_classes)), num_classes)
-    # 在柱状图上添加数值标签
     for i, v in enumerate(every_class_num):
         plt.text(x=i, y=v + 5, s=str(v), ha="center")
-    # 设置x坐标
+
     if mode == "train":
         plt.xlabel("train image class")
     elif mode == "val":
         plt.xlabel("val image class")
-    # 设置y坐标
+
     plt.ylabel("number of images")
-    # 设置柱状图的标题
     plt.title("class distribution")
     if mode == "train":
         plt.savefig(os.path.join(experiment_dir, "train_dataset.png"))

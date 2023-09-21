@@ -197,7 +197,7 @@ def train(cfg):
                 scaler.step(optimizer)
                 scaler.update()
 
-        # Storing training loss and validation loss in TENSORBOARD
+        # # Saving training loss values & learning rates to tensorboard
         tb_writer.add_scalar(
             tag="training_loss",
             scalar_value=mean_loss.item(),
@@ -227,6 +227,8 @@ def train(cfg):
             logger.info(
                 f"Validation Epoch: [{epoch + 1}/{cfg.GLOBAL.EPOCH_NUM}] Loss: {round(ce_loss, 3)}"
             )
+
+            # Saving validation loss values to tensorboard
             tb_writer.add_scalar(
                 tag="validation_loss",
                 scalar_value=ce_loss,
