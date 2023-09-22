@@ -4,19 +4,12 @@ import torch.distributed as dist
 from torch.utils.data import DataLoader, distributed
 from torch.cuda.amp.grad_scaler import GradScaler
 from torch.cuda.amp.autocast_mode import autocast
+from constants import BASE_DIR
 from logger.logger import get_logger
-
-# from tqdm import tqdm
 from logger.logger import setup_logging
 from utils.image_utils import reshape_all_images
-from utils.util import (
-    yaml_parser,
-    init_setting,
-    setup_seed,
-    get_parameter_number,
-    build_optimizer,
-    build_scheduler,
-)
+from utils.config_utils import yaml_parser, init_setting, setup_seed
+from utils.optimizer_utils import get_parameter_number, build_optimizer, build_scheduler
 from torch.utils.tensorboard.writer import SummaryWriter
 from torch.nn.utils.rnn import pack_padded_sequence
 from data.dataset import CustomCocoDataset
@@ -26,13 +19,14 @@ from model.build_model import get_model, parallel_model, de_parallel
 from loss.build_loss import get_loss
 from copy import deepcopy
 from val import evaluate
+import nltk
 
 
 def get_args():
     parser = argparse.ArgumentParser(description="Training")
     parser.add_argument(
         "--yaml",
-        default="config/train.yaml",
+        default=BASE_DIR + "/config/train.yaml",
         type=str,
         help="configuration file",
     )
@@ -54,6 +48,8 @@ def get_envs():
 
 
 def train(cfg):
+    nltk.download("punkt")
+
     # root directories of the training experiment, checkpoints, tensorboard_logs, and logs(text)
     experiment_dir, checkpoints_dir, tensorboard_dir, log_dir = init_setting(cfg)
     setup_logging(save_dir=log_dir)
@@ -72,6 +68,7 @@ def train(cfg):
     cuda = cfg.GLOBAL.DEVICE != "cpu" and torch.cuda.is_available()  # bool
     device = torch.device("cuda:0" if cuda else "cpu")
     rank, local_rank, world_size = get_envs()
+    logger.info(f"Using device: {device}")
 
     if local_rank != -1:  # DDP distributed mode
         logger.info("In DDP mode.")
@@ -180,14 +177,12 @@ def train(cfg):
                 # running average of the loss over multiple mini-batches
                 mean_loss = (mean_loss * step + loss.detach()) / (step + 1)
 
-                if step % 5 == 0 and rank in [-1, 0]:
+                if step % cfg.GLOBAL.LOG_EPOCH_STEP == 0 and rank in [-1, 0]:
                     logger.info(
                         f"Epoch [{epoch + 1}/{cfg.GLOBAL.EPOCH_NUM}], Step[{step + 1}/{len(data_loader)}], Loss: {mean_loss.item():.4f}"
                     )
 
-                # data_loader.desc = "[epoch {}] mean train loss {}".format(
-                #     epoch, round(mean_loss.item(), 3)
-                # )
+                # data_loader.desc = f"Epoch [{epoch + 1}/{cfg.GLOBAL.EPOCH_NUM}], Step[{step + 1}/{len(data_loader)}], Loss: {mean_loss.item():.4f}"
 
                 if not torch.isfinite(loss):  # if NaN
                     logger.warning("WARNING: non-finite loss, ending training ", loss)

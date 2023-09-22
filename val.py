@@ -1,7 +1,7 @@
 import argparse
-from utils.util import yaml_parser
+from utils.config_utils import yaml_parser
 from logger.logger import get_logger
-import os
+import os, sys
 import torch
 from torch.utils.data import DataLoader
 from torch.nn.utils.rnn import pack_padded_sequence
@@ -31,7 +31,7 @@ def evaluate(model, data_loader, device, cfg):
     loss_function = get_loss(cfg)  # create loss function
     mean_loss = torch.zeros(1).to(device)
 
-    with torch.no_grad():
+    with torch.inference_mode():
         model.eval()
         # data_loader = tqdm(data_loader, file=sys.stdout)
 
