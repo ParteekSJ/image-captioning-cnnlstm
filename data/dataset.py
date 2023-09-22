@@ -88,8 +88,8 @@ class CustomCocoDataset(Dataset):
         return image, ground_truth
 
     def __len__(self):
-        # return len(self.indices)
-        return 8
+        return len(self.indices)
+        # return 8
 
 
 def collate_function(data_batch):

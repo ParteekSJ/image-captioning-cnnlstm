@@ -1,18 +1,18 @@
 GLOBAL:
   USE_GPU: true
   RESUME: false
-  RESUME_PATH: ./train_log/2022-0926_1009/checkpoints/best.pth
+  RESUME_PATH: "${BASE_DIR}/train_log/2022-0926_1009/checkpoints/best.pth"
   DEVICE: '0' # 'cpu' or '0' or '0,1,2,3' ...
   EPOCH_NUM: 10
-  SAVE_RESULT_DIR: ./train_log
+  SAVE_RESULT_DIR: "${BASE_DIR}/train_log"
   SAVE_EPOCH_STEP: 1
   VAL_EPOCH_STEP: 2
-  PRETRAINED_MODEL: ./pretrained_model/resnet34.pth
+  PRETRAINED_MODEL: "${BASE_DIR}/pretrained_model/resnet34.pth"
   DISTRIBUTED: true
   EARLY_STOP_PATIENCE: 5
-  TRAIN_DIR: ./data_dir/train
-  VAL_DIR: ./data_dir/val
-  TEST_DIR: ./data_dir/test
+  TRAIN_DIR: "${BASE_DIR}/data_dir/train"
+  VAL_DIR: "${BASE_DIR}/data_dir/val"
+  TEST_DIR: "${BASE_DIR}/data_dir/test"
   VISUAL_AUGMENTATION: true
   USE_AMP: false
 
@@ -30,13 +30,13 @@ TRAIN:
   NUM_WORKERS: 4
 
 DATASET:
-  IMAGE_DIR: "./data_dir/train2014"
-  IMAGE_VAL_DIR: "./data_dir/val2014"
-  RESIZED_IMAGE_DIR: "./data_dir/resized_images"
-  RESIZED_VAL_IMAGE_DIR: "./data_dir/resized_val_images"
-  ANNOTATIONS_DIR: "./data_dir/annotations/captions_train2014.json"
-  VAL_ANNOTATIONS_DIR: "./data_dir/annotations/captions_val2014.json"
-  SAVED_VOCAB_PATH: "./data_dir/vocabulary.pkl"
+  IMAGE_DIR: "${BASE_DIR}/data_dir/train2014"
+  IMAGE_VAL_DIR: "${BASE_DIR}/data_dir/val2014"
+  RESIZED_IMAGE_DIR: "${BASE_DIR}/data_dir/resized_images"
+  RESIZED_VAL_IMAGE_DIR: "${BASE_DIR}/data_dir/resized_val_images"
+  ANNOTATIONS_DIR: "${BASE_DIR}/data_dir/annotations/captions_train2014.json"
+  VAL_ANNOTATIONS_DIR: "${BASE_DIR}/data_dir/annotations/captions_val2014.json"
+  SAVED_VOCAB_PATH: "${BASE_DIR}/data_dir/vocabulary.pkl"
   THRESHOLD: 4
 
 MODEL:
