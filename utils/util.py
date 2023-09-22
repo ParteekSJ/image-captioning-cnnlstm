@@ -4,6 +4,7 @@ import math
 import random
 import glob
 import os
+import shutil
 from PIL import Image
 import matplotlib.pyplot as plt
 from pathlib import Path
@@ -330,3 +331,11 @@ def write_json(content, fname):
     fname = Path(fname)
     with fname.open("wt") as handle:
         json.dump(content, handle, indent=4, sort_keys=False)
+
+
+def delete_folder(folder_name):
+    try:
+        shutil.rmtree(folder_name)
+        print(f"Successfully deleted the '{folder_name}' folder and its contents.")
+    except OSError as e:
+        print(f"Error: {e} - '{folder_name}' folder was not deleted.")
